@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-// https://apigee.com/console/apigee-console-snapshots-1312174800000_724b196f-080f-4496-82bb-8402d0e397e3/rendersnapshotview
-
 namespace common
 {
     /// <summary>
