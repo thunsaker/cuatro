@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-// https://apigee.com/console/apigee-console-snapshots-1312174800000_724b196f-080f-4496-82bb-8402d0e397e3/rendersnapshotview
-
-namespace common
+namespace Cuatro.Common
 {
     /// <summary>
     /// Foursquare Badges
     /// </summary>
+    [Serializable]
     public class Badge
     {
         /// <summary>
@@ -42,6 +41,7 @@ namespace common
     /// <summary>
     /// Foursquare Partner Badges
     /// </summary>
+    [Serializable]
     public class PartnerBadge : Badge
     {
         public string Subtype { get; set; }
@@ -50,6 +50,7 @@ namespace common
     /// <summary>
     /// General Badge Types
     /// </summary>
+    [Serializable]
     public enum BadgeType
     {
         all,
@@ -60,6 +61,7 @@ namespace common
     /// <summary>
     /// Badge Type Image Sizes
     /// </summary>
+    [Serializable]
     public enum TypeImageSize
     {
         Small = 24,
@@ -71,6 +73,7 @@ namespace common
     /// <summary>
     /// Badge Image Sizes
     /// </summary>
+    [Serializable]
     public enum BadgeImageSize
     {
         Small = 57,

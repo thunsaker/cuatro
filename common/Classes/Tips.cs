@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace common
+namespace Cuatro.Common
 {
     /// <summary>
     /// Foursquare Venue Tips
     /// </summary>
+    [Serializable]
     public class Tips
     {
         /// <summary>
@@ -49,11 +50,13 @@ namespace common
     /// <summary>
     /// Todos
     /// </summary>
+    [Serializable]
     public class Todos : Tips { }
 
     /// <summary>
     /// Tip Status
     /// </summary>
+    [Serializable]
     public enum TipStatus
     {
         todo,

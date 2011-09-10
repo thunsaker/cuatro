@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json.Linq;
 
-namespace common
+namespace Cuatro.Common
 {
+    [Serializable]
     public class FoursquareUser
     {
         /// <summary>
@@ -25,7 +27,7 @@ namespace common
         /// <summary>
         /// User Profile Photo Uri
         /// </summary>
-        public Uri PhotoUri { get; set; }
+        public string PhotoUri { get; set; }
 
         /// <summary>
         /// User Gender
@@ -41,11 +43,32 @@ namespace common
         /// Relationship to Requesting User (self/friend/etc)
         /// </summary>
         public string Relationship { get; set; }
+
+        /// <summary>
+        /// Foursquare Oauth Access Token
+        /// </summary>
+        public string AccessToken { get; set; }
+
+        internal static FoursquareUser Parse(string p)
+        {
+            JObject u = JObject.Parse(p);
+            return new FoursquareUser()
+            {
+                FoursquareUserId = u["id"] != null ? int.Parse(u["id"].ToString().Replace("\"", "")) : 0,
+                FirstName = u["firstName"] != null ? u["firstName"].ToString().Replace("\"", "") : "",
+                LastName = u["lastName"] != null ? u["lastName"].ToString().Replace("\"", "") : "",
+                PhotoUri = u["photo"] != null ? u["photo"].ToString().Replace("\"", "") : "",
+                Gender = u["gender"] != null ? u["gender"].ToString().Replace("\"", "") : "",
+                HomeCity = u["homeCity"] != null ? u["homeCity"].ToString().Replace("\"", "") : "",
+                Relationship = u["relationship"] != null ? u["relationship"].ToString().Replace("\"", "") : ""
+            };
+        }
     }
 
     /// <summary>
     /// Foursquare User
     /// </summary>
+    [Serializable]
     public class FoursquareUserExtended : FoursquareUser
     {
         /// <summary>
@@ -97,7 +120,14 @@ namespace common
         /// Total Todo Count
         /// </summary>
         public int TodosCount { get; set; }
+    }
 
+    /// <summary>
+    /// User Scores
+    /// </summary>
+    [Serializable]
+    public class FoursquareUserScores
+    {
         /// <summary>
         /// Recent Scores Count
         /// </summary>
@@ -113,10 +143,23 @@ namespace common
         /// TODO: Find out more about this one
         /// </summary>
         public int ScoresCheckinsCount { get; set; }
+
+        internal static FoursquareUserScores Parse(string p)
+        {
+            JObject s = JObject.Parse(p);
+
+            return new FoursquareUserScores()
+            {
+                ScoresRecentCount = s["recent"] != null ? int.Parse(s["recent"].ToString().Replace("\"", "")) : 0,
+                ScoresMaxCount = s["max"] != null ? int.Parse(s["max"].ToString().Replace("\"", "")) : 0,
+                ScoresCheckinsCount = s["checkinsCount"] != null ? int.Parse(s["checkinsCount"].ToString().Replace("\"", "")) : 0
+            };
+        }
     }
 
     /// <summary>
     /// A Friend is a basic FoursquareUser
     /// </summary>
+    [Serializable]
     public class Friend : FoursquareUser { }
 }

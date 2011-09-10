@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace common
+namespace Cuatro.Common
 {
+    /// <summary>
+    /// Unlocked Badges
+    /// </summary>
+    [Serializable]
     public class UnlockedBadge
     {
         /// <summary>
@@ -17,6 +21,9 @@ namespace common
         /// </summary>
         public Badge Badge { get; set; }
 
+        /// <summary>
+        /// Checkin information for the badge
+        /// </summary>
         public Checkin Checkin { get; set; }
     }
 }

@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json.Linq;
 
-namespace common
+namespace Cuatro.Common
 {
+    [Serializable]
     public class Location
     {
         /// <summary>
@@ -40,11 +42,27 @@ namespace common
         /// <summary>
         /// Latitude Coordinate
         /// </summary>
-        public long Latitude { get; set; }
+        public double Latitude { get; set; }
 
         /// <summary>
         /// Longitude Coordinate
         /// </summary>
-        public long Longitude { get; set; }
+        public double Longitude { get; set; }
+
+        internal static Location Parse(string p)
+        {
+            JObject rawLocationInfo = JObject.Parse(p);
+
+            Location tempLocation = new Location();
+            tempLocation.Address = rawLocationInfo["address"] != null ? rawLocationInfo["address"].ToString().Replace("\"", "") : "";
+            tempLocation.CrossStreet = rawLocationInfo["crossStreet"] != null ? rawLocationInfo["crossStreet"].ToString().Replace("\"", "") : "";
+            tempLocation.City = rawLocationInfo["city"] != null ? rawLocationInfo["city"].ToString().Replace("\"", "") : "";
+            tempLocation.State = rawLocationInfo["state"] != null ? rawLocationInfo["state"].ToString().Replace("\"", "") : "";
+            tempLocation.PostalCode = rawLocationInfo["postalCode"] != null ? rawLocationInfo["postalCode"].ToString().Replace("\"", "") : "";
+            tempLocation.Country = rawLocationInfo["country"] != null ? rawLocationInfo["country"].ToString().Replace("\"", "") : "";
+            tempLocation.Latitude = rawLocationInfo["lat"] != null ? double.Parse(rawLocationInfo["lat"].ToString().Replace("\"", "")) : 0;
+            tempLocation.Longitude = rawLocationInfo["lng"] != null ? double.Parse(rawLocationInfo["lng"].ToString().Replace("\"", "")) : 0;
+            return tempLocation;
+        }
     }
 }
