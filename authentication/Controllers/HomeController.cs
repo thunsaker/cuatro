@@ -24,5 +24,13 @@ namespace Cuatro.MVCDemo.Controllers
             else
                 return View();
         }
+
+        public ActionResult Error()
+        {
+            if (Request["error"] != null)
+                @ViewBag.ErrorMessage = Request["error"];
+
+            return View();
+        }
     }
 }

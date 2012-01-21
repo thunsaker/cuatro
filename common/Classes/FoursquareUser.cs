@@ -7,12 +7,17 @@ using Newtonsoft.Json.Linq;
 namespace Cuatro.Common
 {
     [Serializable]
-    public class FoursquareUser
+    public class FoursquareUser : Base
     {
         /// <summary>
         /// Foursquare User Id
         /// </summary>
         public int FoursquareUserId { get; set; }
+
+        /// <summary>
+        /// Foursquare User Id (Id assigned to each foursquare user)
+        /// </summary>
+        public int FoursquareId { get; set; }
 
         /// <summary>
         /// User First Name
@@ -71,6 +76,8 @@ namespace Cuatro.Common
     [Serializable]
     public class FoursquareUserExtended : FoursquareUser
     {
+        public int FoursquareUserExtendedId { get; set; }
+
         /// <summary>
         /// User Type
         /// </summary>
@@ -126,8 +133,10 @@ namespace Cuatro.Common
     /// User Scores
     /// </summary>
     [Serializable]
-    public class FoursquareUserScores
+    public class FoursquareUserScores : Base
     {
+        public int FoursquareUserScoresId { get; set; }
+
         /// <summary>
         /// Recent Scores Count
         /// </summary>
@@ -161,5 +170,7 @@ namespace Cuatro.Common
     /// A Friend is a basic FoursquareUser
     /// </summary>
     [Serializable]
-    public class Friend : FoursquareUser { }
+    public class Friend : FoursquareUser {
+        public int FriendId { get; set; }
+    }
 }

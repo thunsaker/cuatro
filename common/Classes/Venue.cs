@@ -10,12 +10,17 @@ namespace Cuatro.Common
     /// Foursquare Venue
     /// </summary>
     [Serializable]
-    public class Venue
+    public class Venue : Base
     {
+        /// <summary>
+        /// Venue Id
+        /// </summary>
+        public string VenueId { get; set; }
+
         /// <summary>
         /// Foursquare Venue Id
         /// </summary>
-        public string VenueId { get; set; }
+        public string FoursquareVenueId { get; set; }
 
         /// <summary>
         /// Venue Name
@@ -23,9 +28,8 @@ namespace Cuatro.Common
         public string Name { get; set; }
 
         /// <summary>
-        /// Venue Item Id
+        /// Not sure what this does...
         /// </summary>
-        // TODO: Verify what this is
         public string ItemId { get; set; }
 
         /// <summary>
@@ -90,8 +94,10 @@ namespace Cuatro.Common
     /// Foursquare Venue Category
     /// </summary>
     [Serializable]
-    public class VenueCategory
+    public class VenueCategory : Base
     {
+        public int VenueCategoryId { get; set; }
+
         /// <summary>
         /// Foursquare Venue Category Id
         /// </summary>
@@ -155,8 +161,10 @@ namespace Cuatro.Common
     /// Basic Venue Stats
     /// </summary>
     [Serializable]
-    public class VenueStatistics
+    public class VenueStatistics : Base
     {
+        public int VenueStatisticsId { get; set; }
+
         /// <summary>
         /// Total Checkins Count
         /// </summary>

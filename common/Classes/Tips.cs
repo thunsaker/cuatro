@@ -9,8 +9,10 @@ namespace Cuatro.Common
     /// Foursquare Venue Tips
     /// </summary>
     [Serializable]
-    public class Tips
+    public class Tips : Base
     {
+        public int TipsId { get; set; }
+
         /// <summary>
         /// Foursquare Tips Id
         /// </summary>
@@ -51,7 +53,9 @@ namespace Cuatro.Common
     /// Todos
     /// </summary>
     [Serializable]
-    public class Todos : Tips { }
+    public class Todos : Tips {
+        public int TodosId { get; set; }
+    }
 
     /// <summary>
     /// Tip Status

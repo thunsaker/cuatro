@@ -16,8 +16,8 @@ namespace Cuatro.MVCDemo.Controllers
     public class FoursquareOauthController : Controller
     {
         // TODO: Add Foursquare Client ID and Client Secret here
-        private static string CLIENT_ID = "YOUR_CLIENT_ID";
-        private static string CLIENT_SECRET = "YOUR_CLIENT_SECRET";
+        private static string CLIENT_ID = "EB3UDFPR5H5FJSMH3QU323RJLLWIIIQOT30CSYQZVNA5L4QR";
+        private static string CLIENT_SECRET = "GX4AW4HJD22HUQCSEZSKGFUWONWG4QU0KXA05GWQAVVJPFKK";
         private static string REDIRECT_URI = "http://localhost:4444/FoursquareOauth/Receiver";
 
         //

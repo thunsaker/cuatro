@@ -10,8 +10,10 @@ namespace Cuatro.Common
     /// Foursquare Photo
     /// </summary>
     [Serializable]
-    public class Photo
+    public class Photo : Base
     {
+        public int PhotoId { get; set; }
+
         /// <summary>
         /// Foursquare Photo Id
         /// </summary>
@@ -42,8 +44,10 @@ namespace Cuatro.Common
     /// Photo Info (uri, size)
     /// </summary>
     [Serializable]
-    public class PhotoInfo
+    public class PhotoInfo : Base
     {
+        public int PhotoInfoId { get; set; }
+
         /// <summary>
         /// Photo Uri
         /// </summary>

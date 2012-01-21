@@ -10,8 +10,10 @@ namespace Cuatro.Common
     /// Base Contact Information
     /// </summary>
     [Serializable]
-    public class Contact
+    public class Contact : Base
     {
+        public int ContactId { get; set; }
+
         /// <summary>
         /// Phone Number
         /// </summary>
@@ -58,6 +60,8 @@ namespace Cuatro.Common
     [Serializable]
     public class VenueContact : Contact
     {
+        public int VenueContactId { get; set; }
+
         /// <summary>
         /// Location Info
         /// </summary>
@@ -82,6 +86,8 @@ namespace Cuatro.Common
     [Serializable]
     public class UserContact : Contact
     {
+        public int UserContactId { get; set; }
+
         /// <summary>
         /// User Email Address
         /// </summary>

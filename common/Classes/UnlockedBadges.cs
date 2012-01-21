@@ -9,15 +9,17 @@ namespace Cuatro.Common
     /// Unlocked Badges
     /// </summary>
     [Serializable]
-    public class UnlockedBadge
+    public class UnlockedBadge : Base
     {
+        public int UnlockedBadgeId { get; set; }
+
         /// <summary>
         /// Unique user badge id
         /// </summary>
         public string BadgeId { get; set; }
 
         /// <summary>
-        /// Badge into that was unlocked
+        /// Badge info that was unlocked
         /// </summary>
         public Badge Badge { get; set; }
 
@@ -25,5 +27,10 @@ namespace Cuatro.Common
         /// Checkin information for the badge
         /// </summary>
         public Checkin Checkin { get; set; }
+
+        /// <summary>
+        /// Expertise Level
+        /// </summary>
+        public int Level { get; set; }
     }
 }

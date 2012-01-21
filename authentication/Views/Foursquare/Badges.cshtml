@@ -13,8 +13,8 @@
             $(document).ready(function () {
                 $('#item_all').addClass('selected');
                 $('#item_foursquare').removeClass('selected');
+                $('#item_expertise').removeClass('selected');
                 $('#item_partner').removeClass('selected');
-
                 $('.badge-item').each(function () {
                     $(this).show();
                 });
@@ -25,9 +25,25 @@
             $(document).ready(function () {
                 $('#item_all').removeClass('selected');
                 $('#item_foursquare').addClass('selected');
+                $('#item_expertise').removeClass('selected');
                 $('#item_partner').removeClass('selected');
                 $('.badge-item').each(function () {
                     if($(this).hasClass('badge-foursquare'))
+                        $(this).show();
+                    else
+                        $(this).hide();
+                });
+            });
+        }
+
+        function showExpertiseBadges() {
+            $(document).ready(function () {
+                $('#item_all').removeClass('selected');
+                $('#item_foursquare').removeClass('selected');
+                $('#item_expertise').addClass('selected');
+                $('#item_partner').removeClass('selected');
+                $('.badge-item').each(function () {
+                    if ($(this).hasClass('badge-expertise'))
                         $(this).show();
                     else
                         $(this).hide();
@@ -39,6 +55,7 @@
             $(document).ready(function () {
                 $('#item_all').removeClass('selected');
                 $('#item_foursquare').removeClass('selected');
+                $('#item_expertise').removeClass('selected');
                 $('#item_partner').addClass('selected');
                 $('.badge-item').each(function () {
                     if ($(this).hasClass('badge-partner'))
@@ -61,6 +78,11 @@
         <li id="item_foursquare">
             <a href="#" onclick="showFoursquareBadges()">
                 Foursquare
+            </a>
+        </li>
+        <li id="item_expertise">
+            <a href="#" onclick="showExpertiseBadges()">
+                Expertise
             </a>
         </li>
         <li id="item_partner">

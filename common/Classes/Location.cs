@@ -7,8 +7,10 @@ using Newtonsoft.Json.Linq;
 namespace Cuatro.Common
 {
     [Serializable]
-    public class Location
+    public class Location : Base
     {
+        public int LocationId { get; set; }
+
         /// <summary>
         /// Screet Address
         /// </summary>

@@ -10,12 +10,17 @@ namespace Cuatro.Common
     /// Foursquare Checkin
     /// </summary>
     [Serializable]
-    public class Checkin
+    public class Checkin : Base
     {
         /// <summary>
         /// Foursquare Checkin Id
         /// </summary>
         public string CheckinId { get; set; }
+
+        /// <summary>
+        /// Foursquare Checkin Id
+        /// </summary>
+        public string FoursquareCheckinId { get; set; }
 
         /// <summary>
         /// Checkin Creation Time/Date
@@ -123,29 +128,47 @@ namespace Cuatro.Common
     [Serializable]
     public struct CheckinComments
     {
-        public List<String> Comments { get; set; }
+        public List<Comment> Comments { get; set; }
 
         internal static CheckinComments Parse(string p)
         {
             JObject rawcommentText = JObject.Parse(p);
             if (int.Parse(rawcommentText["count"].ToString()) > 0)
             {
-                List<String> commentsList = new List<String>();
+                List<Comment> commentsList = new List<Comment>();
 
                 JArray comments = (JArray)rawcommentText["items"];
                 foreach (var item in comments)
                 {
-                    String tempcomment = string.Empty;
-                    tempcomment = rawcommentText["comment"] != null ? rawcommentText["comment"].ToString().Replace("\"", "") : "";
+                    Comment tempComment = new Comment()
+                    {
+                        Text = rawcommentText["comment"] != null ? rawcommentText["comment"].ToString().Replace("\"", "") : "",
+                        Active = true,
+                        DateCreated = DateTime.Now
+                    };
+                    commentsList.Add(tempComment);
                 }
 
                 return new CheckinComments()
                 {
-                    Comments = commentsList
+                    Comments = commentsList,
                 };
             }
 
             return new CheckinComments();
         }
+    }
+
+    public class Comment : Base
+    {
+        /// <summary>
+        /// Comment Identifier
+        /// </summary>
+        public int CommentId { get; set; }
+
+        /// <summary>
+        /// Comment Text
+        /// </summary>
+        public String Text { get; set; }
     }
 }

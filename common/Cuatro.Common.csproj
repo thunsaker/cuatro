@@ -46,6 +46,7 @@
     <Compile Include="Classes\Badge.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Classes\Base.cs" />
     <Compile Include="Classes\Checkin.cs">
       <SubType>Code</SubType>
     </Compile>

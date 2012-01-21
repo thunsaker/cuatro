@@ -10,9 +10,18 @@ namespace Cuatro.Common
     /// What service was used to checkin?
     /// </summary>
     [Serializable]
-    public struct Source
+    public class Source : Base
     {
+        public int SourceId { get; set; }
+
+        /// <summary>
+        /// Name of the application/program that created the item
+        /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Url of application/program that created the item
+        /// </summary>
         public string SourceUri { get; set; }
 
         internal static Source Parse(string p)

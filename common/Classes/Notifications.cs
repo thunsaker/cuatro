@@ -9,8 +9,10 @@ namespace Cuatro.Common
     /// Foursquare Notifications
     /// </summary>
     [Serializable]
-    public class Notifications
+    public class Notification : Base
     {
+        public int NotificationId { get; set; }
+
         /// <summary>
         /// Type of Notifications
         /// </summary>

@@ -168,26 +168,34 @@ namespace Cuatro.Common.Endpoints
                 if (int.Parse(jsonBadges["meta"]["code"].ToString()) == 200)
                 {
                     List<UserBadgeCategory> UnlockedBadgeIds = new List<UserBadgeCategory>();
-
-                    foreach (var fbi in jsonBadges["response"]["sets"]["groups"])
+                    JArray badgeList = (JArray)jsonBadges["response"]["sets"]["groups"];
+                    foreach (var fbi in badgeList)
                     {
-                        foreach (var fbid in fbi["items"])
+                        if (fbi["type"].ToString().Replace("\"", "").ToLower() != "all")
                         {
-                            UserBadgeCategory tempBadgeCategory = new UserBadgeCategory();
-                            switch (fbi["type"].ToString().Replace("\"", "").ToLower())
+                            foreach (var fbid in fbi["items"])
                             {
-                                case "4sq":
-                                    tempBadgeCategory.UserBadgeId = fbid.ToString().Replace("\"", "");
-                                    tempBadgeCategory.Type = BadgeType.foursquare;
-                                    UnlockedBadgeIds.Add(tempBadgeCategory);
-                                    break;
-                                case "partner":
-                                    tempBadgeCategory.UserBadgeId = fbid.ToString().Replace("\"", "");
-                                    tempBadgeCategory.Type = BadgeType.partner;
-                                    UnlockedBadgeIds.Add(tempBadgeCategory);
-                                    break;
-                                default:
-                                    break;
+                                UserBadgeCategory tempBadgeCategory = new UserBadgeCategory();
+                                switch (fbi["type"].ToString().Replace("\"", "").ToLower())
+                                {
+                                    case "foursquare":
+                                        tempBadgeCategory.UserBadgeId = fbid.ToString().Replace("\"", "");
+                                        tempBadgeCategory.Type = BadgeType.foursquare;
+                                        UnlockedBadgeIds.Add(tempBadgeCategory);
+                                        break;
+                                    case "expertise":
+                                        tempBadgeCategory.UserBadgeId = fbid.ToString().Replace("\"", "");
+                                        tempBadgeCategory.Type = BadgeType.expertise;
+                                        UnlockedBadgeIds.Add(tempBadgeCategory);
+                                        break;
+                                    case "partner":
+                                        tempBadgeCategory.UserBadgeId = fbid.ToString().Replace("\"", "");
+                                        tempBadgeCategory.Type = BadgeType.partner;
+                                        UnlockedBadgeIds.Add(tempBadgeCategory);
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
                         }
                     }
@@ -198,7 +206,7 @@ namespace Cuatro.Common.Endpoints
                         {
                             JObject b = JObject.Parse(jsonBadges["response"]["badges"][ubc.UserBadgeId].ToString());
                             UnlockedBadge ub = new UnlockedBadge();
-                            if (b["id"] != null)
+                            if (b["id"] != null && (b["id"].ToString().Replace("\"", "") != b["badgeId"].ToString().Replace("\"", "")))
                             {
                                 ub.BadgeId = b["id"].ToString().Replace("\"", "");
 
@@ -271,12 +279,14 @@ namespace Cuatro.Common.Endpoints
                                 }
 
                                 ub.Badge = badge;
+                                ub.Level = b["level"] != null ? int.Parse(b["level"].ToString()) : 0;
                                 UnlockedBadges.Add(ub);
                             }
-                            else
-                            {
-                                return null;
-                            }
+                            //else
+                            //{
+                            //    var errorId = b["badgeId"];
+                            //    return null;
+                            //}
                         } 
                     }
                 }
