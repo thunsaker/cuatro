@@ -5,28 +5,24 @@ using System.Web;
 using System.Web.Mvc;
 using Cuatro.Common;
 
-namespace Cuatro.MVCDemo.Controllers
-{
-    public class HomeController : Controller
-    {
+namespace Cuatro.MVCDemo.Controllers {
+    public class HomeController : Controller {
         //
         // GET: /Home/
-
-        public ActionResult Index()
-        {
+        public ActionResult Index() {
             return View();
         }
 
-        public ActionResult Profile(FoursquareUser user)
-        {
+        //
+        // GET: /Home/Profile
+        public ActionResult Profile(FoursquareUser user) {
             if (user != null)
                 return View(user);
             else
                 return View();
         }
 
-        public ActionResult Error()
-        {
+        public ActionResult Error() {
             if (Request["error"] != null)
                 @ViewBag.ErrorMessage = Request["error"];
 

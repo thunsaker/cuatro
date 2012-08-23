@@ -5,26 +5,20 @@ using System.Web;
 using System.Web.Mvc;
 using Cuatro.Common;
 using Cuatro.Common.Endpoints;
+using Cuatro.MVCDemo.Models;
 
-namespace Cuatro.MVCDemo.Controllers
-{
-    public class FoursquareController : Controller
-    {
+namespace Cuatro.MVCDemo.Controllers {
+    public class FoursquareController : Controller {
         //
         // GET: /Foursquare/
-
-        public ActionResult Index()
-        {
+        public ActionResult Index() {
             return View();
         }
 
         //
         // GET: /Foursquare/Badges
-
-        public ActionResult Badges()
-        {
-            if (Session["foursquare_access_token"] != null)
-            {
+        public ActionResult Badges() {
+            if (Session["foursquare_access_token"] != null) {
                 string accessToken = Session["foursquare_access_token"].ToString().Replace("\"", "");
 
                 Users myUser = new Users(null, accessToken);
@@ -40,11 +34,8 @@ namespace Cuatro.MVCDemo.Controllers
 
         //
         // GET: /Foursquare/Requests
-
-        public ActionResult Requests()
-        {
-            if (Session["CurrentUser"] != null)
-            {
+        public ActionResult Requests() {
+            if (Session["CurrentUser"] != null) {
                 FoursquareUser currentUser = Session["CurrentUser"] as Cuatro.Common.FoursquareUser;
                 string accessToken = currentUser.AccessToken;
 
@@ -62,11 +53,8 @@ namespace Cuatro.MVCDemo.Controllers
 
         //
         // GET: /Foursquare/Leaderboard
-
-        public ActionResult Leaderboard()
-        {
-            if (Session["CurrentUser"] != null)
-            {
+        public ActionResult Leaderboard() {
+            if (Session["CurrentUser"] != null) {
                 FoursquareUser currentUser = Session["CurrentUser"] as Cuatro.Common.FoursquareUser;
                 string accessToken = currentUser.AccessToken;
 
@@ -84,20 +72,15 @@ namespace Cuatro.MVCDemo.Controllers
 
         //
         // GET: /Foursquare/UserSearch
-
-        public ActionResult UserSearch()
-        {
+        public ActionResult UserSearch() {
             return View();
         }
 
         //
         // POST: /Foursquare/UserSearch
-
         [HttpPost]
-        public ActionResult UserSearchSubmit(FormCollection collection)
-        {
-            if (Session["CurrentUser"] != null)
-            {
+        public ActionResult UserSearchSubmit(FormCollection collection) {
+            if (Session["CurrentUser"] != null) {
                 FoursquareUser currentUser = Session["CurrentUser"] as Cuatro.Common.FoursquareUser;
                 string accessToken = currentUser.AccessToken;
 
@@ -105,8 +88,7 @@ namespace Cuatro.MVCDemo.Controllers
                 UserSearchType type = UserSearchType.twitter;
                 // TODO: Consider creating its own class (UserSearchResult or something) to order by relevance/etc
                 List<FoursquareUser> resultList = new List<FoursquareUser>();
-                switch (int.Parse(collection.GetValue("typeIndex").ToString()))
-                {
+                switch (int.Parse(collection.GetValue("typeIndex").ToString())) {
                     case 1:
                         type = UserSearchType.phone;
                         break;
@@ -134,43 +116,35 @@ namespace Cuatro.MVCDemo.Controllers
 
         //
         // GET: /Foursquare/Checkins
-
-        public ActionResult Checkins()
-        {
-            if (Session["CurrentUser"] != null)
-            {
+        public ActionResult Checkins() {
+            if (Session["CurrentUser"] != null) {
                 var daysRequest = Request["days"] ?? null;
                 int days = 0;
                 FoursquareUser currentUser = Session["CurrentUser"] as Cuatro.Common.FoursquareUser;
                 string accessToken = currentUser.AccessToken;
 
                 Users myUser = new Users(currentUser, accessToken);
-                if (daysRequest != null)
-                {
+                if (daysRequest != null) {
                     days = int.Parse(daysRequest);
                     if (days > 365)
                         days = 365;
-                }
-                else
+                } else
                     days = 7;
 
                 ViewBag.Days = days;
                 List<Cuatro.Common.Checkin> myCheckins = new List<Checkin>();
-                List<Cuatro.Common.Checkin> tempCheckins =  myUser.GetCheckins(new TimeSpan(Math.Abs(days), 0, 0, 0), 0);
+                List<Cuatro.Common.Checkin> tempCheckins = myUser.GetCheckins(new TimeSpan(Math.Abs(days), 0, 0, 0), 0);
                 int theOffset = 0;
 
                 myCheckins.AddRange(tempCheckins);
 
-                if (tempCheckins.Count == 20)
-                {
-                    while (tempCheckins.Count == 20)
-                    {
+                if (tempCheckins.Count == 20) {
+                    while (tempCheckins.Count == 20) {
                         tempCheckins = myUser.GetCheckins(new TimeSpan(Math.Abs(days), 0, 0, 0), theOffset);
                         if (tempCheckins != null) {
                             myCheckins.AddRange(tempCheckins);
                             theOffset += 20;
-                        }
-                        else
+                        } else
                             break;
                     }
                 }
@@ -182,6 +156,49 @@ namespace Cuatro.MVCDemo.Controllers
             }
 
             return RedirectToAction("LogOn", "FoursquareOauth");
+        }
+
+        [HttpGet]
+        public ActionResult VenueSearch() {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult VenueSearch(FormCollection collection) {
+            try {
+                List<Venue> results = new List<Venue>();
+
+                string query = collection["SearchQuery"] ?? "";
+                string near = collection["Near"] ?? "";
+                double mylat = 0.00f;
+                double mylong = 0.00f;
+                double.TryParse(collection["Latitude"], out mylat);
+                double.TryParse(collection["Longitude"], out mylong);
+                LocationCoords coords = new LocationCoords() {
+                    Latitude = mylat,
+                    Longitude = mylong
+                };
+                
+                FoursquareUser currentUser = Session["CurrentUser"] as Cuatro.Common.FoursquareUser;
+                string accessToken = currentUser.AccessToken;
+
+                Venues myVenues = new Venues(currentUser, accessToken);
+                
+                if(mylat != 0.00f && mylong != 0.00f) {
+                    results = myVenues.SearchVenues(query, coords, near);
+                }
+
+                return View(new VenueSearchModel() {
+                    Latitude = mylat,
+                    Longitude = mylong,
+                    Near = near,
+                    SearchQuery = query,
+                    VenueResults = results
+                });
+            } catch (Exception ex) {
+                return RedirectToAction("Error", "Home", new { error = "There was a problem. Ex: " + ex.Message });
+                throw;
+            }
         }
     }
 }

@@ -17,13 +17,13 @@
             <span class="title"><a href="@Url.Action("Index", "Home", Model)">Cuatro</a></span><br />
             <span class="subtitle">ASP.NET MVC Web Demo</span>
         </div>
-        @{Html.RenderPartial("HeaderProfile", ViewData);}
+        @Html.Partial("HeaderProfile", ViewData)
     </div>
 
     <div class="content-wrapper-outer">
         <div class="sidebar">
             <div class="sidebar-header">
-                Endpoints
+                @Html.ActionLink("Endpoints", "Index", "Foursquare", null, null)
             </div>
             <div class="sidebar-section">
                 <div class="sidebar-section-title">
@@ -32,20 +32,20 @@
                 <div id="div_users_endpoints" class="sidebar-section-content">
                     <ul>
                         <li>
-                            <a href="@Url.Action("Requests", "Foursquare")">Friend Requests</a>
+                            @Html.ActionLink("Friend Requests", "Requests", "Foursquare", null, null)
                         </li>
                         <li>
-                            <a href="@Url.Action("Leaderboard", "Foursquare")">Leaderboard</a>
+                            @Html.ActionLink("Leaderboard", "Leaderboard", "Foursquare", null, null)
                         </li>
                         @*<li>
                             <a href="@Url.Action("UserSearch", "Foursquare")">Search Users</a>
                         </li>*@
 
                         <li>
-                            <a href="@Url.Action("Badges", "Foursquare")">Unlocked Badges</a>
+                            @Html.ActionLink("Unlocked Badges", "Badges", "Foursquare", null, null)
                         </li>
                         <li>
-                            <a href="@Url.Action("Checkins", "Foursquare")">Checkins</a>
+                            @Html.ActionLink("Checkins", "Checkins", "Foursquare", null, null)
                         </li>
                         @*<li>
                             <a href="@Url.Action("FriendsList", "Foursquare")">Friends List</a>
@@ -61,6 +61,19 @@
                         </li>
                         <li>
                             <a href="@Url.Action("VenueHistory", "Foursquare")">Venue History</a>
+                        </li>*@
+                    </ul>
+                </div>
+                <div class="sidebar-section-title">
+                    Venues
+                </div>
+                <div id="div_venue_endpoints" class="sidebar-section-content">
+                    <ul>
+                        <li>
+                            @Html.ActionLink("Search", "VenueSearch", "Foursquare", null, null)
+                        </li>
+                        @*<li>
+                            @Html.ActionLink("Search", "Requests", "Foursquare", null, null)
                         </li>*@
                     </ul>
                 </div>

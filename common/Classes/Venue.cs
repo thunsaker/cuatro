@@ -4,14 +4,12 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json.Linq;
 
-namespace Cuatro.Common
-{
+namespace Cuatro.Common {
     /// <summary>
     /// Foursquare Venue
     /// </summary>
     [Serializable]
-    public class Venue : Base
-    {
+    public class Venue : Base {
         /// <summary>
         /// Venue Id
         /// </summary>
@@ -62,8 +60,12 @@ namespace Cuatro.Common
         /// </summary>
         public VenueStatistics Statistics { get; set; }
 
-        internal static Venue Parse(string p)
-        {
+        /// <summary>
+        /// Raw JSON for parsing new parameters
+        /// </summary>
+        public string RawJson { get; set; }
+
+        internal static Venue Parse(string p) {
             JObject rawVenueText = JObject.Parse(p);
 
             Venue tempVenue = new Venue();
@@ -72,15 +74,12 @@ namespace Cuatro.Common
             tempVenue.ContactInfo = rawVenueText["contact"] != null ? Contact.Parse(rawVenueText["contact"].ToString()) : null;
             tempVenue.LocationInfo = rawVenueText["location"] != null ? Location.Parse(rawVenueText["location"].ToString()) : null;
             JArray categories = (JArray)rawVenueText["categories"];
-            if (categories.Count > 0)
-            {
+            if (categories.Count > 0) {
                 tempVenue.Categories = new List<VenueCategory>();
-                foreach (var vc in categories)
-                {
+                foreach (var vc in categories) {
                     tempVenue.Categories.Add(VenueCategory.Parse(vc.ToString()));
                 }
-            }
-            else
+            } else
                 tempVenue.Categories = null;
             tempVenue.Verified = rawVenueText["verified"] != null ? bool.Parse(rawVenueText["verified"].ToString()) : true;
             tempVenue.Statistics = rawVenueText["stats"] != null ? VenueStatistics.Parse(rawVenueText["stats"].ToString()) : null;
@@ -94,8 +93,7 @@ namespace Cuatro.Common
     /// Foursquare Venue Category
     /// </summary>
     [Serializable]
-    public class VenueCategory : Base
-    {
+    public class VenueCategory : Base {
         public int VenueCategoryId { get; set; }
 
         /// <summary>
@@ -115,8 +113,11 @@ namespace Cuatro.Common
 
         /// <summary>
         /// Icon Uri
+        /// Contains string in the following format: https://foursquare.com/img/categories_v2/parks_outdoors/playground_{0}.png.
+        /// Replace {0} with one of the following sizes: 32, 44, 64, 88
+        /// Optionally insert bg_ before size to return a gray background instead of white/transparent.
         /// </summary>
-        public Uri IconUri { get; set; }
+        public String IconUri { get; set; }
 
         /// <summary>
         /// List of Parent Categories
@@ -133,8 +134,7 @@ namespace Cuatro.Common
         /// </summary>
         /// <param name="p"></param>
         /// <returns></returns>
-        internal static VenueCategory Parse(string p)
-        {
+        internal static VenueCategory Parse(string p) {
             JObject rawCategoryText = JObject.Parse(p);
 
             VenueCategory tempCategory = new VenueCategory();
@@ -142,12 +142,18 @@ namespace Cuatro.Common
             vc.FoursquareVenueCategoryId = rawCategoryText["id"].ToString().Replace("\"", "");
             vc.Name = rawCategoryText["name"] != null ? rawCategoryText["name"].ToString().Replace("\"", "") : "";
             vc.PluralName = rawCategoryText["pluralName"] != null ? rawCategoryText["pluralName"].ToString().Replace("\"", "") : "";
-            vc.IconUri = rawCategoryText["icon"] != null ? new Uri(rawCategoryText["icon"].ToString().Replace("\"", "")) : null;
-            if (rawCategoryText["parents"] != null)
-            {
+            if(rawCategoryText["icon"] != null) {
+                JObject rawIconUri = JObject.Parse(rawCategoryText["icon"].ToString());
+                vc.IconUri = String.Format("{0}{1}{2}", 
+                    rawIconUri["prefix"] != null ? rawIconUri["prefix"].ToString().Replace("\"", "") : "", 
+                    "{0}",
+                    rawIconUri["suffix"] != null ? rawIconUri["suffix"].ToString().Replace("\"", "") : "");
+            }
+
+            //vc.IconUri = rawCategoryText["icon"] != null ? new Uri(rawCategoryText["icon"].ToString().Replace("\"", "")) : null;
+            if (rawCategoryText["parents"] != null) {
                 vc.ParentCategories = new List<string>();
-                foreach (var pc in (JArray)rawCategoryText["parents"])
-                {
+                foreach (var pc in (JArray)rawCategoryText["parents"]) {
                     vc.ParentCategories.Add(pc.ToString().Replace("\"", ""));
                 }
             }
@@ -161,8 +167,7 @@ namespace Cuatro.Common
     /// Basic Venue Stats
     /// </summary>
     [Serializable]
-    public class VenueStatistics : Base
-    {
+    public class VenueStatistics : Base {
         public int VenueStatisticsId { get; set; }
 
         /// <summary>
@@ -185,8 +190,7 @@ namespace Cuatro.Common
         /// </summary>
         /// <param name="p"></param>
         /// <returns></returns>
-        internal static VenueStatistics Parse(string p)
-        {
+        internal static VenueStatistics Parse(string p) {
             JObject rawVenueStats = JObject.Parse(p);
 
             VenueStatistics tempStats = new VenueStatistics();
@@ -195,5 +199,14 @@ namespace Cuatro.Common
             tempStats.TipCount = rawVenueStats["tipCount"] != null ? int.Parse(rawVenueStats["tipCount"].ToString().Replace("\"", "")) : 0;
             return tempStats;
         }
+    }
+
+    /// <summary>
+    /// Experimental
+    /// </summary>
+    public class VenueHours {
+        public string Status { get; set; }
+
+        public bool IsOpen { get; set; }
     }
 }

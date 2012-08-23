@@ -24,6 +24,10 @@ namespace Cuatro.Common
         {
             return (standardTime.ToUniversalTime().Ticks - 621355968000000000) / 10000000;
         }
+
+        public static string GetVerifiedDateParamForApi(){
+            return "&v=20120822";
+        }
     }
 
     public enum Endpoint

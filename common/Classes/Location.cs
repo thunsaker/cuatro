@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json.Linq;
 
-namespace Cuatro.Common
-{
+namespace Cuatro.Common {
     [Serializable]
-    public class Location : Base
-    {
+    public class Location : Base {
         public int LocationId { get; set; }
 
         /// <summary>
@@ -42,6 +40,11 @@ namespace Cuatro.Common
         public string Country { get; set; }
 
         /// <summary>
+        /// cc
+        /// </summary>
+        public string CountryCode { get; set; }
+
+        /// <summary>
         /// Latitude Coordinate
         /// </summary>
         public double Latitude { get; set; }
@@ -51,8 +54,7 @@ namespace Cuatro.Common
         /// </summary>
         public double Longitude { get; set; }
 
-        internal static Location Parse(string p)
-        {
+        internal static Location Parse(string p) {
             JObject rawLocationInfo = JObject.Parse(p);
 
             Location tempLocation = new Location();
@@ -66,5 +68,17 @@ namespace Cuatro.Common
             tempLocation.Longitude = rawLocationInfo["lng"] != null ? double.Parse(rawLocationInfo["lng"].ToString().Replace("\"", "")) : 0;
             return tempLocation;
         }
+    }
+
+    public class LocationCoords {
+        /// <summary>
+        /// Latitude Coordinate
+        /// </summary>
+        public double Latitude { get; set; }
+
+        /// <summary>
+        /// Longitude Coordinate
+        /// </summary>
+        public double Longitude { get; set; }
     }
 }

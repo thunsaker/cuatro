@@ -4,10 +4,8 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json.Linq;
 
-namespace Cuatro.Common.Endpoints
-{
-    public class Users : IEndpoint
-    {
+namespace Cuatro.Common.Endpoints {
+    public class Users : IEndpoint {
         #region Variables
 
         public string AccessToken;
@@ -15,8 +13,7 @@ namespace Cuatro.Common.Endpoints
 
         #endregion
 
-        public Users(FoursquareUser User, string AccessToken)
-        {
+        public Users(FoursquareUser User, string AccessToken) {
             SetupEndpoint(User, AccessToken, null);
         }
 
@@ -28,24 +25,21 @@ namespace Cuatro.Common.Endpoints
         /// Documentation: https://developer.foursquare.com/docs/users/leaderboard.html
         /// </summary>
         /// <returns></returns>
-        public Leaderboard GetLeaderboard()
-        {
-            try
-            {
+        public Leaderboard GetLeaderboard() {
+            try {
                 List<LeaderboardItem> leaderboardList = new List<LeaderboardItem>();
 
                 // Get the leaderboard
-                String foursquareLeaderboardUri = String.Format("https://api.foursquare.com/v2/users/leaderboard?oauth_token={0}", AccessToken);
+                String foursquareLeaderboardUri = String.Format("https://api.foursquare.com/v2/users/leaderboard?oauth_token={0}{1}",
+                    AccessToken,
+                    EndpointHelper.GetVerifiedDateParamForApi());
                 var responseLeaderboard = WebRequestHelper.WebRequest(WebRequestHelper.Method.GET, foursquareLeaderboardUri.ToString(), string.Empty);
                 var jsonLeaderboard = JObject.Parse(responseLeaderboard);
 
-                if (int.Parse(jsonLeaderboard["meta"]["code"].ToString()) == 200)
-                {
+                if (int.Parse(jsonLeaderboard["meta"]["code"].ToString()) == 200) {
                     JArray userList = (JArray)jsonLeaderboard["response"]["leaderboard"]["items"];
-                    if (userList.Count > 0)
-                    {
-                        foreach (var u in userList)
-                        {
+                    if (userList.Count > 0) {
+                        foreach (var u in userList) {
                             LeaderboardItem li = new LeaderboardItem();
                             li.User = FoursquareUser.Parse(u["user"].ToString());
                             li.Scores = FoursquareUserScores.Parse(u["scores"].ToString());
@@ -55,15 +49,12 @@ namespace Cuatro.Common.Endpoints
                     }
 
                     if (leaderboardList != null && leaderboardList.Count > 0)
-                        return new Leaderboard()
-                        {
+                        return new Leaderboard() {
                             UsersList = leaderboardList
                         };
                 }
                 return null;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 string error = ex.Message;
                 return null;
             }
@@ -75,21 +66,21 @@ namespace Cuatro.Common.Endpoints
         /// Documentation: https://developer.foursquare.com/docs/users/search.html
         /// </summary>
         /// <returns></returns>
-        public List<FoursquareUser> SearchUser(UserSearchType type, string Query)
-        {
-            try
-            {
+        public List<FoursquareUser> SearchUser(UserSearchType type, string Query) {
+            try {
                 List<FoursquareUser> results = new List<FoursquareUser>();
 
                 // Get Friend Requests
-                String foursquareUserSearchUri = String.Format("https://api.foursquare.com/v2/users/search?{0}={1}&oauth_token={2}", type.ToString("F"), Query, AccessToken);
+                String foursquareUserSearchUri = String.Format("https://api.foursquare.com/v2/users/search?oauth_token={0}{1}&{2}={3}",
+                    AccessToken,
+                    EndpointHelper.GetVerifiedDateParamForApi(),
+                    type.ToString("F"), 
+                    Query);
                 var responseUserSearch = WebRequestHelper.WebRequest(WebRequestHelper.Method.GET, foursquareUserSearchUri.ToString(), string.Empty);
                 var jsonUserSearchResults = JObject.Parse(responseUserSearch);
 
-                if (int.Parse(jsonUserSearchResults["meta"]["code"].ToString()) == 200)
-                {
-                    foreach (var fr in jsonUserSearchResults["response"]["results"])
-                    {
+                if (int.Parse(jsonUserSearchResults["meta"]["code"].ToString()) == 200) {
+                    foreach (var fr in jsonUserSearchResults["response"]["results"]) {
                         results.Add(FoursquareUser.Parse(fr.ToString()));
                     }
 
@@ -98,9 +89,7 @@ namespace Cuatro.Common.Endpoints
                 }
 
                 return null;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 string err = ex.Message;
                 return null;
             }
@@ -112,22 +101,20 @@ namespace Cuatro.Common.Endpoints
         /// Documentation: https://developer.foursquare.com/docs/users/requests.html
         /// </summary>
         /// <returns></returns>
-        public List<FriendRequest> GetFriendRequests()
-        {
-            try
-            {
+        public List<FriendRequest> GetFriendRequests() {
+            try {
                 List<FriendRequest> requests = new List<FriendRequest>();
 
                 // Get Friend Requests
-                String foursquareFriendRequestsUri = String.Format("https://api.foursquare.com/v2/users/requests?oauth_token={0}", AccessToken);
+                String foursquareFriendRequestsUri = String.Format("https://api.foursquare.com/v2/users/requests?oauth_token={0}{1}", 
+                    AccessToken,
+                    EndpointHelper.GetVerifiedDateParamForApi());
                 var responseFriendRequests = WebRequestHelper.WebRequest(WebRequestHelper.Method.GET, foursquareFriendRequestsUri.ToString(), string.Empty);
                 var jsonFriendRequests = JObject.Parse(responseFriendRequests);
 
-                if (int.Parse(jsonFriendRequests["meta"]["code"].ToString()) == 200)
-                {
-                    foreach (var fr in jsonFriendRequests["response"]["requests"])
-                    {
-                        requests.Add(new FriendRequest(){
+                if (int.Parse(jsonFriendRequests["meta"]["code"].ToString()) == 200) {
+                    foreach (var fr in jsonFriendRequests["response"]["requests"]) {
+                        requests.Add(new FriendRequest() {
                             UserRequesting = FoursquareUser.Parse(fr.ToString())
                         });
                     }
@@ -137,9 +124,7 @@ namespace Cuatro.Common.Endpoints
                 }
 
                 return null;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 string err = ex.Message;
                 return null;
             }
@@ -155,29 +140,24 @@ namespace Cuatro.Common.Endpoints
         /// Documentation: https://developer.foursquare.com/docs/users/badges.html
         /// </summary>
         /// <returns></returns>
-        public List<UnlockedBadge> GetBadges()
-        {
-            try
-            {
+        public List<UnlockedBadge> GetBadges() {
+            try {
                 List<UnlockedBadge> UnlockedBadges = new List<UnlockedBadge>();
                 // Get the badges
-                String foursquareBadgeUri = String.Format("https://api.foursquare.com/v2/users/self/badges?oauth_token={0}", AccessToken);
+                String foursquareBadgeUri = String.Format("https://api.foursquare.com/v2/users/self/badges?oauth_token={0}{1}",
+                    AccessToken, 
+                    EndpointHelper.GetVerifiedDateParamForApi());
                 var responseBadges = WebRequestHelper.WebRequest(WebRequestHelper.Method.GET, foursquareBadgeUri.ToString(), string.Empty);
                 var jsonBadges = JObject.Parse(responseBadges);
 
-                if (int.Parse(jsonBadges["meta"]["code"].ToString()) == 200)
-                {
+                if (int.Parse(jsonBadges["meta"]["code"].ToString()) == 200) {
                     List<UserBadgeCategory> UnlockedBadgeIds = new List<UserBadgeCategory>();
                     JArray badgeList = (JArray)jsonBadges["response"]["sets"]["groups"];
-                    foreach (var fbi in badgeList)
-                    {
-                        if (fbi["type"].ToString().Replace("\"", "").ToLower() != "all")
-                        {
-                            foreach (var fbid in fbi["items"])
-                            {
+                    foreach (var fbi in badgeList) {
+                        if (fbi["type"].ToString().Replace("\"", "").ToLower() != "all") {
+                            foreach (var fbid in fbi["items"]) {
                                 UserBadgeCategory tempBadgeCategory = new UserBadgeCategory();
-                                switch (fbi["type"].ToString().Replace("\"", "").ToLower())
-                                {
+                                switch (fbi["type"].ToString().Replace("\"", "").ToLower()) {
                                     case "foursquare":
                                         tempBadgeCategory.UserBadgeId = fbid.ToString().Replace("\"", "");
                                         tempBadgeCategory.Type = BadgeType.foursquare;
@@ -200,40 +180,31 @@ namespace Cuatro.Common.Endpoints
                         }
                     }
 
-                    if (UnlockedBadgeIds.Count > 0)
-                    {
-                        foreach (UserBadgeCategory ubc in UnlockedBadgeIds)
-                        {
+                    if (UnlockedBadgeIds.Count > 0) {
+                        foreach (UserBadgeCategory ubc in UnlockedBadgeIds) {
                             JObject b = JObject.Parse(jsonBadges["response"]["badges"][ubc.UserBadgeId].ToString());
                             UnlockedBadge ub = new UnlockedBadge();
-                            if (b["id"] != null && (b["id"].ToString().Replace("\"", "") != b["badgeId"].ToString().Replace("\"", "")))
-                            {
+                            if (b["id"] != null && (b["id"].ToString().Replace("\"", "") != b["badgeId"].ToString().Replace("\"", ""))) {
                                 ub.BadgeId = b["id"].ToString().Replace("\"", "");
 
                                 Badge badge = new Badge();
                                 badge.Name = b["name"] != null ? b["name"].ToString().Replace("\"", "") : "";
-                                badge.Description = b["description"] != null 
-                                    ? b["description"].ToString().Replace("\"", "") 
-                                    : b["hint"].ToString() != "" ? String.Format("Hint: {0}", b["hint"].ToString().Replace("\"", "")) 
+                                badge.Description = b["description"] != null
+                                    ? b["description"].ToString().Replace("\"", "")
+                                    : b["hint"].ToString() != "" ? String.Format("Hint: {0}", b["hint"].ToString().Replace("\"", ""))
                                     : "No hint";
                                 badge.FoursquareBadgeId = b["badgeId"] != null ? b["badgeId"].ToString().Replace("\"", "") : "";
-                                if (b["image"]["prefix"] != null && b["image"]["name"] != null)
-                                {
+                                if (b["image"]["prefix"] != null && b["image"]["name"] != null) {
                                     badge.ImageUri = b["image"]["prefix"].ToString().Replace("\"", "") + "{0}" + b["image"]["name"].ToString().Replace("\"", "");
-                                }
-                                else
+                                } else
                                     badge.ImageUri = "";
                                 badge.Type = ubc.Type;
 
                                 // Create Checkins
-                                if (b["unlocks"] != null)
-                                {
-                                    foreach (var u in b["unlocks"])
-                                    {
-                                        if (u["checkins"] != null)
-                                        {
-                                            foreach (var c in u["checkins"])
-                                            {
+                                if (b["unlocks"] != null) {
+                                    foreach (var u in b["unlocks"]) {
+                                        if (u["checkins"] != null) {
+                                            foreach (var c in u["checkins"]) {
                                                 Checkin checkin = new Checkin();
                                                 checkin.CheckinId = c["id"] != null ? c["id"].ToString().Replace("\"", "") : "";
                                                 checkin.CreatedAt = EndpointHelper.FromUnixTime(long.Parse(c["createdAt"].ToString().Replace("\"", "")));
@@ -241,29 +212,23 @@ namespace Cuatro.Common.Endpoints
                                                 String checkinType = c["type"] != null ? c["type"].ToString().Replace("\"", "") : "";
                                                 checkin.Type = checkinType;
 
-                                                if (checkinType != "venueless")
-                                                {
+                                                if (checkinType != "venueless") {
                                                     Venue v = new Venue();
                                                     v.VenueId = c["venue"]["id"] != null ? c["venue"]["id"].ToString().Replace("\"", "") : "";
                                                     v.Name = c["venue"]["name"] != null ? c["venue"]["name"].ToString().Replace("\"", "") : "";
                                                     v.ItemId = c["venue"]["itemId"] != null ? c["venue"]["itemId"].ToString().Replace("\"", "") : "";
                                                     v.ContactInfo = c["venue"]["contact"] != null ? Contact.Parse(c["venue"]["contact"].ToString()) : null;
                                                     v.LocationInfo = c["venue"]["location"] != null ? Location.Parse(c["venue"]["location"].ToString()) : null;
-                                                    if (c["venue"]["categories"] != null && c["venue"]["categories"].ToString().Replace("\"", "") != "")
-                                                    {
+                                                    if (c["venue"]["categories"] != null && c["venue"]["categories"].ToString().Replace("\"", "") != "") {
                                                         JArray categories = (JArray)c["venue"]["categories"];
-                                                        if (categories.Count > 0)
-                                                        {
+                                                        if (categories.Count > 0) {
                                                             v.Categories = new List<VenueCategory>();
-                                                            foreach (var vc in categories)
-                                                            {
+                                                            foreach (var vc in categories) {
                                                                 v.Categories.Add(VenueCategory.Parse(vc.ToString()));
                                                             }
-                                                        }
-                                                        else
+                                                        } else
                                                             v.Categories = null;
-                                                    }
-                                                    else
+                                                    } else
                                                         v.Categories = null;
                                                     v.Statistics = c["venue"]["stats"] != null ? VenueStatistics.Parse(c["venue"]["stats"].ToString()) : null;
                                                     v.Verified = c["venue"]["verified"] != null ? bool.Parse(c["venue"]["verified"].ToString().Replace("\"", "")) : true;
@@ -287,16 +252,14 @@ namespace Cuatro.Common.Endpoints
                             //    var errorId = b["badgeId"];
                             //    return null;
                             //}
-                        } 
+                        }
                     }
                 }
 
                 if (UnlockedBadges != null && UnlockedBadges.Count > 0)
                     return UnlockedBadges;
                 return null;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 string error = ex.Message;
                 return null;
             }
@@ -308,26 +271,26 @@ namespace Cuatro.Common.Endpoints
         /// Documentation: https://developer.foursquare.com/docs/users/checkins.html
         /// </summary>
         /// <returns></returns>
-        public List<Checkin> GetCheckins(TimeSpan DateRange, int Offset)
-        {
-            try
-            {
+        public List<Checkin> GetCheckins(TimeSpan DateRange, int Offset) {
+            try {
                 List<Checkin> userCheckins = new List<Checkin>();
                 // Get the checkins
                 DateTime startTime = DateTime.Now;
                 DateTime endTime = DateTime.Now.AddDays(-DateRange.Days);
 
-                String foursquareCheckinUri = String.Format("https://api.foursquare.com/v2/users/self/checkins?oauth_token={0}&afterTimestamp={1}&beforeTimestamp{2}&offset={3}", AccessToken, EndpointHelper.ToUnixTime(endTime), EndpointHelper.ToUnixTime(startTime), Offset);
+                String foursquareCheckinUri = String.Format("https://api.foursquare.com/v2/users/self/checkins?oauth_token={0}{1}&afterTimestamp={2}&beforeTimestamp{3}&offset={4}",
+                    AccessToken, 
+                    EndpointHelper.GetVerifiedDateParamForApi(),
+                    EndpointHelper.ToUnixTime(endTime), 
+                    EndpointHelper.ToUnixTime(startTime), 
+                    Offset);
                 var responseCheckins = WebRequestHelper.WebRequest(WebRequestHelper.Method.GET, foursquareCheckinUri.ToString(), string.Empty);
                 var jsonCheckins = JObject.Parse(responseCheckins);
 
-                if (int.Parse(jsonCheckins["meta"]["code"].ToString()) == 200)
-                {
+                if (int.Parse(jsonCheckins["meta"]["code"].ToString()) == 200) {
                     JArray checkinList = (JArray)jsonCheckins["response"]["checkins"]["items"];
-                    foreach (var item in checkinList)
-                    {
-                        Checkin myCheckin = new Checkin()
-                        {
+                    foreach (var item in checkinList) {
+                        Checkin myCheckin = new Checkin() {
                             CheckinId = item["id"] != null ? item["id"].ToString().Replace("\"", "") : "",
                             CreatedAt = item["createdAt"] != null ? EndpointHelper.FromUnixTime(long.Parse(item["createdAt"].ToString())) : DateTime.MinValue,
                             Type = item["type"] != null ? item["type"].ToString().Replace("\"", "") : "",
@@ -347,9 +310,7 @@ namespace Cuatro.Common.Endpoints
                 }
 
                 return null;
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 string error = ex.Message;
                 return null;
             }
@@ -361,8 +322,7 @@ namespace Cuatro.Common.Endpoints
         /// Documentation: https://developer.foursquare.com/docs/users/friends.html
         /// </summary>
         /// <returns></returns>
-        public List<Friend> GetFriendsList()
-        {
+        public List<Friend> GetFriendsList() {
             return null;
         }
 
@@ -372,8 +332,7 @@ namespace Cuatro.Common.Endpoints
         /// Documentation: https://developer.foursquare.com/docs/users/mayorships.html
         /// </summary>
         /// <returns></returns>
-        public List<Mayorships> GetMayorships()
-        {
+        public List<Mayorships> GetMayorships() {
             return null;
         }
 
@@ -383,8 +342,7 @@ namespace Cuatro.Common.Endpoints
         /// Documentation: https://developer.foursquare.com/docs/users/tips.html
         /// </summary>
         /// <returns></returns>
-        public List<Tips> GetTips()
-        {
+        public List<Tips> GetTips() {
             return null;
         }
 
@@ -394,8 +352,7 @@ namespace Cuatro.Common.Endpoints
         /// Documentation: https://developer.foursquare.com/docs/users/todos.html
         /// </summary>
         /// <returns></returns>
-        public List<Todos> GetTodos()
-        {
+        public List<Todos> GetTodos() {
             return null;
         }
 
@@ -406,8 +363,7 @@ namespace Cuatro.Common.Endpoints
         /// Documentation: https://developer.foursquare.com/docs/users/venuehistory.html
         /// </summary>
         /// <returns></returns>
-        public List<Venue> GetVenueHistory()
-        {
+        public List<Venue> GetVenueHistory() {
             return null;
         }
 
@@ -427,8 +383,7 @@ namespace Cuatro.Common.Endpoints
         /// <param name="CurrentAccessToken"></param>
         /// <param name="CurrentUser"></param>
         /// <param name="Extras"></param>
-        public void SetupEndpoint(FoursquareUser CurrentUser, string CurrentAccessToken, object extras)
-        {
+        public void SetupEndpoint(FoursquareUser CurrentUser, string CurrentAccessToken, object extras) {
             AccessToken = CurrentAccessToken;
             User = CurrentUser;
         }
@@ -437,8 +392,7 @@ namespace Cuatro.Common.Endpoints
 
         #region Helper Classes
 
-        public struct UserBadgeCategory
-        {
+        public struct UserBadgeCategory {
             public BadgeType Type { get; set; }
             public string UserBadgeId { get; set; }
         }
