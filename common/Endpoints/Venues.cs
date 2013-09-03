@@ -62,6 +62,10 @@ namespace Cuatro.Common.Endpoints {
             }
         }
 
+        public Venue GetVenue(string venueId) {
+
+        }
+
         #endregion
 
         #region IEndpoint Members
